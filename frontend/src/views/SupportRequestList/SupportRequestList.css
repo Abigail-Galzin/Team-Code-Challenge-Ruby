@@ -1,0 +1,19 @@
+.request-list-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+}
+
+.request-list-actions button {
+  border: none;
+  background: none;
+  color: var(--primary-color);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+}
+
+.request-list-actions button:hover {
+  text-decoration: underline;
+}
