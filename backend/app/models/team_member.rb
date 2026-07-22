@@ -1,8 +1,8 @@
 class TeamMember < ApplicationRecord
   enum :role, {
-    developer: 0,
-    qa: 1,
-    support: 2
+    developer: "developer",
+    qa: "qa",
+    support: "support"
   }, validate: true
 
   scope :active, -> { where(active: true)}

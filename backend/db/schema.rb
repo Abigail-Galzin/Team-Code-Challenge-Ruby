@@ -19,9 +19,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_21_164631) do
     t.datetime "created_at", null: false
     t.string "email", null: false
     t.string "name", null: false
-    t.integer "role", default: 0, null: false
+    t.string "role", default: "developer", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_team_members_on_email", unique: true
-    t.index ["name"], name: "index_team_members_on_name", unique: true
   end
 end
