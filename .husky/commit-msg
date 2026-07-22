@@ -1,0 +1,7 @@
+if ! npx --no -- commitlint --edit "$1"; then
+  echo ""
+  echo "The commit message does not follow the Conventional Commits format."
+  echo "Please review the README and use a valid prefix (feat, fix, chore, docs, refactor, test, etc.)."
+  echo ""
+  exit 1
+fi
