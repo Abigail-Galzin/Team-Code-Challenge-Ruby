@@ -1,4 +1,6 @@
 class SupportRequest < ApplicationRecord
+  self.record_timestamps = false
+
   belongs_to :team_member,  optional: true
 
   enum :status, {
@@ -23,9 +25,19 @@ class SupportRequest < ApplicationRecord
 
  validate :team_member_must_exist_and_be_active
 
+ before_create :set_created_at
+ before_update :set_updated_at
  before_save :set_completed_at
 
  private
+
+ def set_created_at
+   self.created_at ||= Time.current
+ end
+
+ def set_updated_at
+   self.updated_at = Time.current
+ end
 
  def team_member_must_exist_and_be_active
    return if team_member_id.blank?

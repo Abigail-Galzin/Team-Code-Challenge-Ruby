@@ -176,6 +176,7 @@ GEM
     nokogiri (1.19.4-x86_64-linux-gnu)
       racc (~> 1.4)
     ostruct (0.6.3)
+    pagy (9.4.0)
     pg (1.6.3-x64-mingw-ucrt)
     pg (1.6.3-x86_64-darwin)
     pg (1.6.3-x86_64-linux)
@@ -311,6 +312,7 @@ DEPENDENCIES
   faker
   image_processing (~> 1.2)
   kamal
+  pagy (~> 9.4)
   pg (~> 1.1)
   puma (>= 5.0)
   rails (~> 8.1.3)
