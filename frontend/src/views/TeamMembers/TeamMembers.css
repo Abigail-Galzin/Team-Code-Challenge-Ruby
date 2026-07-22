@@ -1,0 +1,29 @@
+.team-member {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+}
+
+.team-member-name {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.team-member-role {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.team-member-email {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.team-member-load {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  border-top: 1px solid var(--border-color);
+  padding-top: var(--spacing-sm);
+  margin: 0;
+}
