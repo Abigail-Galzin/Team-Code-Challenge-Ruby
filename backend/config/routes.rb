@@ -10,7 +10,8 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      resources :support_requests, only: [ :index ]
+      resources :support_requests, only: [ :index, :create,  :update, :show ]
+      resources :team_members, only: [ :index ]
     end
   end
 end

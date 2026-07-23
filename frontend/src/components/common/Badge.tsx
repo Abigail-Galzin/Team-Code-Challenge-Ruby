@@ -37,12 +37,14 @@ const priorityTone: Record<RequestPriority, BadgeTone> = {
   low: "success",
   medium: "warning",
   high: "error",
+  critical: "error",
 };
 
 const priorityLabel: Record<RequestPriority, string> = {
   low: "Low",
   medium: "Medium",
   high: "High",
+  critical: "Critical",
 };
 
 export function PriorityBadge({ priority }: { priority: RequestPriority }) {

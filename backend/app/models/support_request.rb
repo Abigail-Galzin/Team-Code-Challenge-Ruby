@@ -20,8 +20,8 @@ class SupportRequest < ApplicationRecord
 
  validates :title, presence: true
  validates :description, presence: true
- validates :status, presence: true, inclusion: { in: statuses.keys }
- validates :priority, presence: true, inclusion: { in: priorities.keys }
+ validates :status, presence: true
+ validates :priority, presence: true
 
  validate :team_member_must_exist_and_be_active
 

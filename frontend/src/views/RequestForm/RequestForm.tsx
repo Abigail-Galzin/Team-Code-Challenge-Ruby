@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AppLayout } from "../../components/layout/AppLayout";
 import { Card } from "../../components/layout/Card";
@@ -7,38 +7,116 @@ import { TextArea } from "../../components/form/TextArea";
 import { Dropdown } from "../../components/form/Dropdown";
 import { RadioButton } from "../../components/form/RadioButton";
 import { Button } from "../../components/common/Button";
-import { getSupportRequestById, mockTeamMembers } from "../../services/mockData";
-import type { RequestPriority } from "../../types";
+import { Alert } from "../../components/feedback/Alert";
+import { LoadingSpinner } from "../../components/feedback/LoadingSpinner";
+import { createSupportRequest, fetchSupportRequest, updateSupportRequest } from "../../services/supportRequestsApi";
+import { searchTeamMembers } from "../../services/teamMembersApi";
+import type { RequestPriority, RequestStatus, TeamMemberSearchResult } from "../../types";
 import "./RequestForm.css";
 
 const priorityOptions = [
   { label: "Low", value: "low" },
   { label: "Medium", value: "medium" },
   { label: "High", value: "high" },
+  { label: "Critical", value: "critical" },
 ];
 
-const assigneeOptions = mockTeamMembers.map((member) => ({ label: member.name, value: member.id }));
+const statusOptions = [
+  { label: "Open", value: "open" },
+  { label: "In Progress", value: "in_progress" },
+  { label: "Resolved", value: "resolved" },
+  { label: "Closed", value: "closed" },
+];
 
 export function RequestForm() {
   const { id } = useParams();
   const navigate = useNavigate();
   const isEdit = Boolean(id);
-  const existing = id ? getSupportRequestById(id) : undefined;
 
-  const [title, setTitle] = useState(existing?.title ?? "");
-  const [description, setDescription] = useState(existing?.description ?? "");
-  const [priority, setPriority] = useState<RequestPriority>(existing?.priority ?? "medium");
-  const [assignee, setAssignee] = useState("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [status, setStatus] = useState<RequestStatus>("open");
+  const [priority, setPriority] = useState<RequestPriority>("medium");
   const [titleError, setTitleError] = useState("");
+  const [descriptionError, setDescriptionError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+
+  const [assigneeId, setAssigneeId] = useState("");
+  const [teamMembers, setTeamMembers] = useState<TeamMemberSearchResult[]>([]);
+
+  const [initialLoading, setInitialLoading] = useState(isEdit);
+  const [loadError, setLoadError] = useState("");
+
+  useEffect(() => {
+    searchTeamMembers("")
+      .then(setTeamMembers)
+      .catch(() => setTeamMembers([]));
+  }, []);
+
+  useEffect(() => {
+    if (!id) return;
+
+    setInitialLoading(true);
+    setLoadError("");
+    fetchSupportRequest(id)
+      .then((response) => {
+        const record = response.data;
+        setTitle(record.title);
+        setDescription(record.description);
+        setStatus(record.status);
+        setPriority(record.priority);
+        setAssigneeId(record.team_member_id ? String(record.team_member_id) : "");
+      })
+      .catch(() => {
+        setLoadError("Unable to load this support request.");
+      })
+      .finally(() => {
+        setInitialLoading(false);
+      });
+  }, [id]);
+
+  const assigneeOptions = teamMembers.map((member) => ({
+    label: `${member.name} (${member.email})`,
+    value: String(member.id),
+  }));
 
   function handleSubmit() {
-    if (!title.trim()) {
-      setTitleError("Title is required");
+    const trimmedTitle = title.trim();
+    const trimmedDescription = description.trim();
+
+    setTitleError(trimmedTitle ? "" : "Title is required");
+    setDescriptionError(trimmedDescription ? "" : "Description is required");
+
+    if (!trimmedTitle || !trimmedDescription) {
       return;
     }
-    setTitleError("");
-    console.log("submit request", { title, description, priority, assignee });
-    navigate("/requests");
+
+    setSubmitError("");
+    setSubmitting(true);
+
+    const payload = {
+      title: trimmedTitle,
+      description: trimmedDescription,
+      status,
+      priority,
+      team_member_id: assigneeId ? Number(assigneeId) : null,
+    };
+
+    const request = isEdit && id ? updateSupportRequest(id, payload) : createSupportRequest(payload);
+
+    request
+      .then(() => {
+        navigate("/requests");
+      })
+      .catch((error) => {
+        const data = error?.response?.data;
+        const message = Array.isArray(data?.error) ? data.error.join(", ") : data?.error;
+        setSubmitError(message ?? "Unable to save the support request.");
+      })
+      .finally(() => {
+        setSubmitting(false);
+      });
   }
 
   return (
@@ -52,43 +130,61 @@ export function RequestForm() {
       ]}
     >
       <Card>
-        <div className="request-form">
-          <TextBox
-            label="Title"
-            required
-            value={title}
-            onChange={setTitle}
-            error={titleError}
-            placeholder="e.g. Unable to access billing dashboard"
-          />
-          <TextArea
-            label="Description"
-            rows={5}
-            value={description}
-            onChange={setDescription}
-            helperText="Provide as much detail as possible"
-          />
-          <RadioButton
-            label="Priority"
-            name="priority"
-            options={priorityOptions}
-            value={priority}
-            onChange={(value) => setPriority(value as RequestPriority)}
-          />
-          <Dropdown
-            label="Assign To"
-            options={assigneeOptions}
-            value={assignee}
-            onChange={setAssignee}
-            placeholder="Unassigned"
-          />
-          <div className="request-form-actions">
-            <Button variant="secondary" onClick={() => navigate(-1)}>
-              Cancel
-            </Button>
-            <Button onClick={handleSubmit}>{isEdit ? "Save Changes" : "Create Request"}</Button>
+        {initialLoading ? (
+          <LoadingSpinner label="Loading support request..." />
+        ) : loadError ? (
+          <Alert variant="error">{loadError}</Alert>
+        ) : (
+          <div className="request-form">
+            {submitError && <Alert variant="error">{submitError}</Alert>}
+            <TextBox
+              label="Title"
+              required
+              value={title}
+              onChange={setTitle}
+              error={titleError}
+              placeholder="e.g. Unable to access billing dashboard"
+            />
+            <TextArea
+              label="Description"
+              required
+              rows={5}
+              value={description}
+              onChange={setDescription}
+              error={descriptionError}
+              helperText="Provide as much detail as possible"
+            />
+            <RadioButton
+              label="Status"
+              name="status"
+              options={statusOptions}
+              value={status}
+              onChange={(value) => setStatus(value as RequestStatus)}
+            />
+            <RadioButton
+              label="Priority"
+              name="priority"
+              options={priorityOptions}
+              value={priority}
+              onChange={(value) => setPriority(value as RequestPriority)}
+            />
+            <Dropdown
+              label="Assign To"
+              options={assigneeOptions}
+              value={assigneeId}
+              onChange={setAssigneeId}
+              placeholder="Unassigned"
+            />
+            <div className="request-form-actions">
+              <Button variant="secondary" onClick={() => navigate(-1)}>
+                Cancel
+              </Button>
+              <Button onClick={handleSubmit} loading={submitting}>
+                {isEdit ? "Save Changes" : "Create Request"}
+              </Button>
+            </div>
           </div>
-        </div>
+        )}
       </Card>
     </AppLayout>
   );

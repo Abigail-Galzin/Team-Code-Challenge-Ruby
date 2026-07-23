@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 export * from "./support";
+export * from "./pagination";
 
 export interface SelectOption {
   label: string;
