@@ -9,5 +9,8 @@ class CreateComments < ActiveRecord::Migration[8.1]
     end
     add_index :comments, :author_email
     add_foreign_key :comments, :team_members, column: :author_email, primary_key: :email
+
+    change_column_default :support_requests, :created_at, from: nil, to: -> { "CURRENT_TIMESTAMP" }
+    change_column_default :support_requests, :updated_at, from: nil, to: -> { "CURRENT_TIMESTAMP" }
   end
 end

@@ -5,7 +5,8 @@
 team_members = [
   { name: "Abigail Galzin", email: "abigail.galzin@assuresoft.com", role: "developer", active: true },
   { name: "Christian Alba", email: "mcguiver.alba@assuresoft.com", role: "qa", active: true },
-  { name: "Ronald Luna", email: "ronald.luna@assuresoft.com", role: "support", active: true }
+  { name: "Ronald Luna", email: "ronald.luna@assuresoft.com", role: "support", active: true },
+  { name: "Sheila Salinas", email: "sheila.salinas@assuresoft.com", role: "qa", active: false },
 ].map do |attrs|
   TeamMember.find_or_create_by!(email: attrs[:email]) do |tm|
     tm.name = attrs[:name]
@@ -35,6 +36,13 @@ support_requests = [
     status: "resolved",
     priority: "low",
     team_member: team_members[2]
+  },
+  {
+    title: "Incorrect data display in reports",
+    description: "Reported data does not match the actual database values.",
+    status: "resolved",
+    priority: "high",
+    team_member: team_members[3]
   }
 ].map do |attrs|
   SupportRequest.find_or_create_by!(title: attrs[:title]) do |sr|
