@@ -12,6 +12,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :support_requests, only: [ :index, :create,  :update, :show ]
       resources :team_members, only: [ :index ]
+      resources :dashboard, only: [ :index ]
     end
   end
 end

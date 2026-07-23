@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 export * from "./support";
 export * from "./pagination";
 export * from "./mock";
+export * from "./dashboard";
 
 export interface SelectOption {
   label: string;
