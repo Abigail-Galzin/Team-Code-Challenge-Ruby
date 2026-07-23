@@ -16,7 +16,7 @@ export function TeamMembers() {
     const fetchMembers = async() => {
       try {
         const response = await teamMembersApi.getAll();
-        setMembers(response.data);
+        setMembers(response.data.data);
       } catch(err) {
 
       }
@@ -48,7 +48,6 @@ export function TeamMembers() {
                 Edit
               </Button>
             </div>
-
           </Card>
         ))}
       </Grid>

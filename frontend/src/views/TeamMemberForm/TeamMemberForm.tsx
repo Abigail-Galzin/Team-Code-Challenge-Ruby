@@ -71,7 +71,7 @@ export function TeamMemberForm() {
       try {
         setIsLoading(true);
         const response = await teamMembersApi.getById(id);
-        const data = response.data;
+        const data = response.data.data;
 
         setName(data.name ?? "");
         setEmail(data.email ?? "");

@@ -29,3 +29,9 @@
 
 en:
   hello: "Hello world"
+
+  success:
+    response: "%{model} returned correctly"
+
+  errors:
+    response_not_found: "Not found the %{model}"
