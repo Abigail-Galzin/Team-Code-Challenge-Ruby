@@ -107,3 +107,12 @@ Material UI, Bootstrap, Tailwind, and Ant Design were intentionally excluded. Be
 - **API integration**: `services/apiClient.ts` already exists; replacing `services/mockData.ts` calls with axios calls inside the same file keeps view components untouched.
 - **State management**: Views currently use local `useState`. Because pages only consume data through `services/`, introducing a store (e.g. React Query, Zustand) later means changing the data layer, not every component that renders it.
 - **Role-based access**: `types/support.ts` and the mock team members already model distinct people/roles, so gating UI by role is additive once auth exists.
+
+## Frontend ↔ Backend Connection
+
+The two apps run as separate origins in development — Rails on `http://localhost:3000` (see `backend/README.md`), Vite on `http://localhost:5173` (see `frontend/README.md`) — so connecting them is a cross-origin HTTP integration, not a same-process call. This is not wired up yet; the pieces below exist to make it a small, localized change rather than a redesign:
+
+- **`VITE_API_BASE_URL`**: read by `src/services/apiClient.ts` (`import.meta.env.VITE_API_BASE_URL ?? "/api"`) as the axios instance's `baseURL`. Documented with its local default (`http://localhost:3000`) in `frontend/.env.example`. If left unset, it falls back to the relative path `"/api"`, which only resolves correctly when frontend and backend share an origin (e.g. behind the same reverse proxy in production) — for local dev, `.env` must set it explicitly to the backend's origin.
+- **CORS**: currently **not enabled**. Both `rack-cors` in `backend/Gemfile` and the generated `backend/config/initializers/cors.rb` are commented out. Without this, browser requests from `localhost:5173` to `localhost:3000` will be blocked regardless of a correct `VITE_API_BASE_URL`. Enabling it means uncommenting the gem, running `bundle install`, and uncommenting/configuring the initializer to allow the frontend's origin(s).
+- **API surface**: `backend/config/routes.rb` currently only defines the Rails health check (`/up`); no domain endpoints (e.g. for `TeamMember`) exist yet. Routes get added as controllers are built for each resource.
+- **Wiring order**: CORS → add API routes/controllers for a resource → replace that resource's calls in `frontend/src/services/mockData.ts` with real `apiClient` calls, one service function at a time, without touching the view components that consume `services/` (see "Reusable Components" and "Future Extensibility" under Frontend Architecture Decisions above).
