@@ -51,6 +51,14 @@ export interface CreateSupportRequestPayload {
   due_date?: string | null;
 }
 
+export interface TeamMember {
+  id?: string;
+  name: string;
+  email: string;
+  role: string;
+  //activeRequests: number;
+}
+
 export interface TeamMemberSearchResult {
   id: number;
   name: string;
