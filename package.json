@@ -1,0 +1,14 @@
+{
+  "name": "team-code-challenge-ruby",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Repo-wide git hook tooling (Husky + commitlint) enforcing commit message format for both backend/ and frontend/.",
+  "scripts": {
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.5.0",
+    "@commitlint/config-conventional": "^19.5.0",
+    "husky": "^9.1.6"
+  }
+}

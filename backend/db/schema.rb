@@ -16,14 +16,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_22_160000) do
 
   create_table "support_requests", force: :cascade do |t|
     t.datetime "completed_at"
-    t.datetime "created_at", null: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.string "description", null: false
     t.date "due_date"
     t.string "priority", default: "medium", null: false
     t.string "status", default: "open", null: false
     t.bigint "team_member_id"
     t.string "title", null: false
-    t.datetime "updated_at"
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["team_member_id"], name: "index_support_requests_on_team_member_id"
   end
 
