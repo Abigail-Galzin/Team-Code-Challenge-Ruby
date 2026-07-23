@@ -35,6 +35,14 @@ bin/rails db:prepare
 
 Creates `backend_development` (and `backend_test`) if they don't exist and runs pending migrations. Use `bin/rails db:migrate` afterwards for new migrations.
 
+### Seed data
+
+```bash
+bin/rails db:seed
+```
+
+Populates `db/seeds.rb`: 3 team members (one per role), 3 support requests (one per team member), and 2 comments per support request. Idempotent — safe to run multiple times.
+
 ## Run Locally
 
 ```bash

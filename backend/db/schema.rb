@@ -10,9 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_22_153729) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_23_164758) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "comments", force: :cascade do |t|
+    t.string "author_email"
+    t.text "body"
+    t.datetime "created_at", null: false
+    t.bigint "support_request_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["author_email"], name: "index_comments_on_author_email"
+    t.index ["support_request_id"], name: "index_comments_on_support_request_id"
+  end
 
   create_table "support_requests", force: :cascade do |t|
     t.datetime "completed_at"
@@ -37,5 +47,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_22_153729) do
     t.index ["email"], name: "index_team_members_on_email", unique: true
   end
 
+  add_foreign_key "comments", "support_requests"
+  add_foreign_key "comments", "team_members", column: "author_email", primary_key: "email"
   add_foreign_key "support_requests", "team_members"
 end
