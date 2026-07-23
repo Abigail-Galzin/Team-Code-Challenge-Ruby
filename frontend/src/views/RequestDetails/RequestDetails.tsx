@@ -8,8 +8,9 @@ import { Alert } from "../../components/feedback/Alert";
 import { EmptyState } from "../../components/feedback/EmptyState";
 import { LoadingSpinner } from "../../components/feedback/LoadingSpinner";
 import { fetchSupportRequest } from "../../services/supportRequestsApi";
-import type { SupportRequest } from "../../types";
+import type { Comment, SupportRequest } from "../../types";
 import { formatDate } from "../../utils/format";
+import { CommentsSection } from "./CommentsSection";
 import "./RequestDetails.css";
 
 export function RequestDetails() {
@@ -133,6 +134,17 @@ export function RequestDetails() {
             </dd>
           </div>
         </dl>
+      </Card>
+      <Card title="Comments">
+        <CommentsSection
+          supportRequestId={request.id}
+          comments={request.comments ?? []}
+          onCommentAdded={(comment: Comment) =>
+            setRequest((current) =>
+              current ? { ...current, comments: [...(current.comments ?? []), comment] } : current
+            )
+          }
+        />
       </Card>
     </AppLayout>
   );
