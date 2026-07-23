@@ -24,7 +24,7 @@ export function Alert({ variant, title, children }: AlertProps) {
       </span>
       <div className="alert-content">
         {title && <p className="alert-title">{title}</p>}
-        <p className="alert-message">{children}</p>
+        <div className="alert-message">{children}</div>
       </div>
     </div>
   );

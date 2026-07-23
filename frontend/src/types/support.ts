@@ -18,9 +18,9 @@ export interface SupportRequest {
 }
 
 export interface TeamMember {
-  id: string;
+  id?: string;
   name: string;
   email: string;
   role: string;
-  activeRequests: number;
+  //activeRequests: number;
 }
