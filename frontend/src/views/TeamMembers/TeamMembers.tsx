@@ -38,15 +38,15 @@ export function TeamMembers() {
               <Avatar name={member.name} size="lg" />
               <div>
                 <p className="team-member-name">{member.name}</p>
-                <p className="team-member-role">{member.role}</p>
+                <p className="team-member-role" style={{ textTransform: 'capitalize' }}>{member.role}</p>
                 <p className="team-member-email">{member.email}</p>
               </div>
             </div>
-            <div>
+            <div className="team-member-actions">
               <p className="team-member-load">{member.activeRequests} active requests</p>
-              <button type="button" onClick={(event) => { event.stopPropagation(); console.log("edit", member.id); navigate(`/team_members/${member.id}/edit`); }}>
+              <Button variant="primary" onClick={() => navigate(`/team-members/${member.id}/edit`)}>
                 Edit
-              </button>
+              </Button>
             </div>
 
           </Card>

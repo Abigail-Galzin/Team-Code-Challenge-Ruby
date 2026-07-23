@@ -90,7 +90,7 @@ export function TeamMemberForm() {
     return (
       <AppLayout
         title={isEdit ? "Edit Member" : "Create Member"}
-        description={isEdit ? `Editing ${id}` : "Register a new team member"}
+        description={isEdit ? `Editing member: ${id}` : "Register a new team member"}
         breadcrumbs={[
           { label: "Dashboard", to: "/" },
           { label: "Team Members", to: "/team-members" },
@@ -107,7 +107,7 @@ export function TeamMemberForm() {
   return (
     <AppLayout
       title={isEdit ? "Edit Member" : "Create Member"}
-      description={isEdit ? `Editing ${id}` : "Register a new team member"}
+      description={isEdit ? `Editing member: ${id}` : "Register a new team member"}
       breadcrumbs={[
         { label: "Dashboard", to: "/" },
         { label: "Team Members", to: "/team-members" },

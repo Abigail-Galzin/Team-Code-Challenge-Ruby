@@ -17,6 +17,7 @@ export function AppRouter() {
       <Route path="/requests/:id/edit" element={<RequestForm />} />
       <Route path="/team-members" element={<TeamMembers />} />
       <Route path="/team-members/new" element={<TeamMemberForm />} />
+      <Route path="/team-members/:id/edit" element={<TeamMemberForm />} />
       <Route path="/components" element={<ComponentsDemo />} />
     </Routes>
   );

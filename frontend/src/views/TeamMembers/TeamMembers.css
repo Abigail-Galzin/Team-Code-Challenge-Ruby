@@ -23,7 +23,15 @@
 .team-member-load {
   font-size: var(--font-size-xs);
   color: var(--text-secondary);
-  border-top: 1px solid var(--border-color);
   padding-top: var(--spacing-sm);
   margin: 0;
+}
+
+.team-member-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border-color);
+  padding-top: 1%;
 }
