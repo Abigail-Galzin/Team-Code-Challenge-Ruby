@@ -1,5 +1,6 @@
 class SupportRequest < ApplicationRecord
   belongs_to :team_member,  optional: true
+  has_many :comments, dependent: :destroy
 
   enum :status, {
     open:"open",

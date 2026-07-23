@@ -6,7 +6,7 @@ team_members = [
   { name: "Abigail Galzin", email: "abigail.galzin@assuresoft.com", role: "developer", active: true },
   { name: "Christian Alba", email: "mcguiver.alba@assuresoft.com", role: "qa", active: true },
   { name: "Ronald Luna", email: "ronald.luna@assuresoft.com", role: "support", active: true },
-  { name: "Sheila Salinas", email: "sheila.salinas@assuresoft.com", role: "qa", active: false },
+  { name: "Sheila Salinas", email: "sheila.salinas@assuresoft.com", role: "qa", active: true },
 ].map do |attrs|
   TeamMember.find_or_create_by!(email: attrs[:email]) do |tm|
     tm.name = attrs[:name]
@@ -64,3 +64,7 @@ support_requests.each do |support_request|
     )
   end
 end
+
+# Scenario: a team member becomes inactive after already being assigned to a support_request.
+sheila = team_members[3]
+sheila.update!(active: false) if sheila.active?
