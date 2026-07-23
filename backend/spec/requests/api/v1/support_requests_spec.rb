@@ -174,6 +174,22 @@ RSpec.describe "Api::V1::SupportRequests", type: :request do
       )
     end
 
+    it "includes the associated comments ordered by creation date, with the author's name" do
+      support_request = FactoryBot.create(:support_request)
+      author = FactoryBot.create(:team_member)
+      older_comment = FactoryBot.create(:comment, support_request: support_request, author_email: author.email, created_at: 1.day.ago)
+      newer_comment = FactoryBot.create(:comment, support_request: support_request, author_email: author.email, created_at: Time.current)
+
+      get "/api/v1/support_requests/#{support_request.id}"
+
+      comments = JSON.parse(response.body)["data"]["comments"]
+      expect(comments.map { |c| c["id"] }).to eq([ older_comment.id, newer_comment.id ])
+      expect(comments.first["body"]).to eq(older_comment.body)
+      expect(comments.first["team_member"]).to eq("name" => author.name)
+      expect(comments.first).not_to have_key("author_email")
+      expect(comments.first).not_to have_key("updated_at")
+    end
+
     it "flags an overdue support request" do
       support_request = FactoryBot.create(:support_request, status: "open", due_date: Date.yesterday)
 

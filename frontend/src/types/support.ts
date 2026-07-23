@@ -16,6 +16,14 @@ export interface TeamMemberInfo {
   role: string;
 }
 
+export interface Comment {
+  id: number;
+  body: string;
+  support_request_id: number;
+  created_at: string;
+  team_member: { name: string };
+}
+
 export interface SupportRequest {
   id: number;
   title: string;
@@ -27,6 +35,18 @@ export interface SupportRequest {
   team_member_id: number | null;
   team_member: TeamMemberInfo | null;
   overdue: boolean;
+  comments?: Comment[];
+}
+
+export interface CreateCommentPayload {
+  body: string;
+  author_email: string;
+}
+
+export interface CommentResponse {
+  message: string;
+  data: Comment;
+  status: string;
 }
 
 export interface SupportRequestListResponse {
@@ -49,6 +69,14 @@ export interface CreateSupportRequestPayload {
   priority: RequestPriority;
   team_member_id?: number | null;
   due_date?: string | null;
+}
+
+export interface TeamMember {
+  id?: string;
+  name: string;
+  email: string;
+  role: string;
+  //activeRequests: number;
 }
 
 export interface TeamMemberSearchResult {

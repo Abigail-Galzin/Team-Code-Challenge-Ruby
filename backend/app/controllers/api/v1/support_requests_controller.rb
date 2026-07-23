@@ -5,7 +5,13 @@ module Api
 
       def show
         resp = Response::ResponseData.new(
-          data: @support_request.as_json(methods: [:overdue], include: { team_member: { only: [:active, :email, :name, :role] } }),
+          data: @support_request.as_json(
+            methods: [:overdue],
+            include: {
+              team_member: { only: [:active, :email, :name, :role] },
+              comments: { except: [:author_email, :updated_at], include: { team_member: { only: :name } } },
+            }
+          ),
           message: "Support request was found",
           status: :ok
         )
