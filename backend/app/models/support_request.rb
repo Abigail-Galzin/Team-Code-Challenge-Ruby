@@ -2,6 +2,7 @@ class SupportRequest < ApplicationRecord
   self.record_timestamps = false
 
   belongs_to :team_member,  optional: true
+  has_many :comments, dependent: :destroy
 
   scope :overdue, -> { where.not(status: %w[resolved closed]).where("due_date < ?", Date.current) }
   scope :by_status,      ->(status)   { where(status: status) }
