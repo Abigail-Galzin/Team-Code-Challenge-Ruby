@@ -2,18 +2,37 @@ import { AppLayout } from "../../components/layout/AppLayout";
 import { Card } from "../../components/layout/Card";
 import { Grid } from "../../components/data/Grid";
 import { Avatar } from "../../components/common/Avatar";
-import { mockTeamMembers } from "../../services/mockData";
+import { teamMembersApi } from "../../services/teamMembersApi";
 import "./TeamMembers.css";
+import { useEffect, useState } from "react";
+import { Button } from "../../components/common/Button";
+import { useNavigate } from "react-router-dom";
 
 export function TeamMembers() {
+  const navigate = useNavigate();
+  const [members, setMembers] = useState([]);
+
+  useEffect(() => {
+    const fetchMembers = async() => {
+      try {
+        const response = await teamMembersApi.getAll();
+        setMembers(response.data);
+      } catch(err) {
+
+      }
+    }
+    fetchMembers();
+  }, []);
+
   return (
     <AppLayout
       title="Team Members"
       description="Support engineers and their current workload"
       breadcrumbs={[{ label: "Dashboard", to: "/" }, { label: "Team Members" }]}
+      actions={<Button onClick={() => navigate("/team-members/new")}>New Request</Button>}
     >
       <Grid columns={3}>
-        {mockTeamMembers.map((member) => (
+        {members.map((member) => (
           <Card key={member.id}>
             <div className="team-member">
               <Avatar name={member.name} size="lg" />
