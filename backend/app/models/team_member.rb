@@ -1,4 +1,6 @@
 class TeamMember < ApplicationRecord
+  has_many :support_requests, dependent: :destroy
+
   enum :role, {
     developer: "developer",
     qa: "qa",
