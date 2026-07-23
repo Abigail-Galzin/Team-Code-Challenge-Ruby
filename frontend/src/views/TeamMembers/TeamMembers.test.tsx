@@ -64,7 +64,7 @@ describe("TeamMembers", () => {
 
     renderTeamMembers();
 
-    const newButton = await screen.findByRole("button", { name: /new request/i });
+    const newButton = await screen.findByRole("button", { name: /new team member/i });
     await user.click(newButton);
 
     expect(screen.getByText("New member page")).toBeInTheDocument();

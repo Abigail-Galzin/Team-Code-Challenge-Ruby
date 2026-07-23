@@ -7,6 +7,7 @@ class TeamMember < ApplicationRecord
     support: "support"
   }, validate: true
 
+  scope :active, -> { where(active: true) }
   scope :by_active, ->(active) {
     return all if active.blank?
 

@@ -1,4 +1,4 @@
-import type { TeamMember } from "../types";
+import type { TeamMember, TeamMemberListResponse } from "../types";
 import { apiClient } from "./apiClient";
 
 export const teamMembersApi = {
@@ -8,5 +8,11 @@ export const teamMembersApi = {
     apiClient.post("/v1/team_members", teamMemberData),
   update: (id: string, teamMemberData: TeamMember) =>
     apiClient.put(`/v1/team_members/${id}`, teamMemberData),
-  delete: (id: string) => apiClient.delete(`/team_members/${id}`),
+  delete: (id: string) => apiClient.delete(`/v1/team_members/${id}`),
 };
+
+export function searchTeamMembers(query: string) {
+  return apiClient
+    .get<TeamMemberListResponse>("/v1/team_members", { params: { active: true, name: query || undefined } })
+    .then((response) => response.data.data);
+}
