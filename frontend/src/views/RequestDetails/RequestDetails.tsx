@@ -3,7 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AppLayout } from "../../components/layout/AppLayout";
 import { Card } from "../../components/layout/Card";
 import { Button } from "../../components/common/Button";
-import { PriorityBadge, StatusBadge } from "../../components/common/Badge";
+import { OverdueBadge, PriorityBadge, StatusBadge } from "../../components/common/Badge";
+import { Alert } from "../../components/feedback/Alert";
 import { EmptyState } from "../../components/feedback/EmptyState";
 import { LoadingSpinner } from "../../components/feedback/LoadingSpinner";
 import { fetchSupportRequest } from "../../services/supportRequestsApi";
@@ -84,6 +85,8 @@ export function RequestDetails() {
         <>
           <Button
             variant="secondary"
+            disabled={request.status === "closed"}
+            title={request.status === "closed" ? "Closed requests cannot be edited" : undefined}
             onClick={() => navigate(`/requests/${request.id}/edit`)}
           >
             Edit
@@ -92,6 +95,9 @@ export function RequestDetails() {
       }
     >
       <Card>
+        {request.status === "closed" && (
+          <Alert variant="info">This request is closed and cannot be edited.</Alert>
+        )}
         <dl className="request-details-list">
           <div>
             <dt>Description</dt>
@@ -103,7 +109,10 @@ export function RequestDetails() {
           </div>
           <div>
             <dt>Due Date</dt>
-            <dd>{request.due_date ? formatDate(request.due_date) : "—"}</dd>
+            <dd className="request-details-due-date">
+              {request.due_date ? formatDate(request.due_date) : "—"}
+              {request.overdue && <OverdueBadge />}
+            </dd>
           </div>
           <div>
             <dt>Completed At</dt>

@@ -5,7 +5,7 @@ module Api
 
       def show
         resp = Response::ResponseData.new(
-          data: @support_request.as_json(include: { team_member: { only: [:active, :email, :name, :role] } }),
+          data: @support_request.as_json(methods: [:overdue], include: { team_member: { only: [:active, :email, :name, :role] } }),
           message: "Support request was found",
           status: :ok
         )
@@ -13,9 +13,9 @@ module Api
       end
 
       def index
-        pagy, records = pagy(SupportRequest.includes(:team_member), limit_max: 10)
+        pagy, records = pagy(filtered_support_requests, limit_max: 10)
         resp = Response::ResponseData.new(
-            data: records.as_json(except: [:created_at, :updated_at], include: { team_member: { only: [:active,:email,:name,:role,]}}),
+            data: records.as_json(except: [:created_at, :updated_at], methods: [:overdue], include: { team_member: { only: [:active,:email,:name,:role,]}}),
             message:"The support request return correctly",
             status: :ok
           )
@@ -70,6 +70,17 @@ module Api
       def team_member_reference_valid?
         team_member_id = support_requests_params[:team_member_id]
         team_member_id.blank? || TeamMember.active.exists?(team_member_id)
+      end
+
+      def filtered_support_requests
+        scope = SupportRequest.includes(:team_member)
+        scope = scope.by_status(params[:status]) if params[:status].present?
+        scope = scope.by_priority(params[:priority]) if params[:priority].present?
+        scope = scope.assigned_to(params[:team_member_id]) if params[:team_member_id].present?
+        scope = scope.unassigned if params[:unassigned] == "true"
+        scope = scope.overdue if params[:overdue] == "true"
+        scope = scope.search_by_title(params[:q]) if params[:q].present?
+        scope
       end
 
     end

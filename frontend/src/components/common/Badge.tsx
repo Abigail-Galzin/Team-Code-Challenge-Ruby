@@ -50,3 +50,7 @@ const priorityLabel: Record<RequestPriority, string> = {
 export function PriorityBadge({ priority }: { priority: RequestPriority }) {
   return <Badge label={priorityLabel[priority]} tone={priorityTone[priority]} />;
 }
+
+export function OverdueBadge() {
+  return <Badge label="Overdue" tone="error" />;
+}

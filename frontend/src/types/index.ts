@@ -2,10 +2,12 @@ import type { ReactNode } from "react";
 
 export * from "./support";
 export * from "./pagination";
+export * from "./mock";
 
 export interface SelectOption {
   label: string;
   value: string;
+  disabled?: boolean;
 }
 
 export interface TableColumn<T> {

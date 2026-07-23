@@ -21,13 +21,6 @@ const priorityOptions = [
   { label: "Critical", value: "critical" },
 ];
 
-const statusOptions = [
-  { label: "Open", value: "open" },
-  { label: "In Progress", value: "in_progress" },
-  { label: "Resolved", value: "resolved" },
-  { label: "Closed", value: "closed" },
-];
-
 export function RequestForm() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -36,7 +29,9 @@ export function RequestForm() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState<RequestStatus>("open");
+  const [initialStatus, setInitialStatus] = useState<RequestStatus | null>(null);
   const [priority, setPriority] = useState<RequestPriority>("medium");
+  const [dueDate, setDueDate] = useState("");
   const [titleError, setTitleError] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -65,7 +60,9 @@ export function RequestForm() {
         setTitle(record.title);
         setDescription(record.description);
         setStatus(record.status);
+        setInitialStatus(record.status);
         setPriority(record.priority);
+        setDueDate(record.due_date ?? "");
         setAssigneeId(record.team_member_id ? String(record.team_member_id) : "");
       })
       .catch(() => {
@@ -80,6 +77,13 @@ export function RequestForm() {
     label: `${member.name} (${member.email})`,
     value: String(member.id),
   }));
+
+  const statusOptions = [
+    { label: "Open", value: "open", disabled: initialStatus === "closed" },
+    { label: "In Progress", value: "in_progress" },
+    { label: "Resolved", value: "resolved" },
+    { label: "Closed", value: "closed", disabled: initialStatus === "resolved" },
+  ];
 
   function handleSubmit() {
     const trimmedTitle = title.trim();
@@ -101,6 +105,7 @@ export function RequestForm() {
       status,
       priority,
       team_member_id: assigneeId ? Number(assigneeId) : null,
+      due_date: dueDate || null,
     };
 
     const request = isEdit && id ? updateSupportRequest(id, payload) : createSupportRequest(payload);
@@ -134,6 +139,15 @@ export function RequestForm() {
           <LoadingSpinner label="Loading support request..." />
         ) : loadError ? (
           <Alert variant="error">{loadError}</Alert>
+        ) : isEdit && initialStatus === "closed" ? (
+          <div className="request-form">
+            <Alert variant="info">This request is closed and cannot be edited.</Alert>
+            <div className="request-form-actions">
+              <Button variant="secondary" onClick={() => navigate(-1)}>
+                Back
+              </Button>
+            </div>
+          </div>
         ) : (
           <div className="request-form">
             {submitError && <Alert variant="error">{submitError}</Alert>}
@@ -167,6 +181,12 @@ export function RequestForm() {
               options={priorityOptions}
               value={priority}
               onChange={(value) => setPriority(value as RequestPriority)}
+            />
+            <TextBox
+              label="Due Date"
+              type="date"
+              value={dueDate}
+              onChange={setDueDate}
             />
             <Dropdown
               label="Assign To"

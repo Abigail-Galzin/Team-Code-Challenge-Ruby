@@ -50,6 +50,20 @@ RSpec.describe "Api::V1::SupportRequests", type: :request do
       expect(body["pagination"]["limit"]).to eq(10)
       expect(body["data"].size).to eq(10)
     end
+
+    it "flags overdue support requests" do
+      FactoryBot.create(:support_request, title: "Overdue", status: "open", due_date: Date.yesterday)
+      FactoryBot.create(:support_request, title: "Not overdue", status: "open", due_date: Date.tomorrow)
+
+      get "/api/v1/support_requests"
+
+      records = JSON.parse(response.body)["data"]
+      overdue = records.find { |r| r["title"] == "Overdue" }
+      not_overdue = records.find { |r| r["title"] == "Not overdue" }
+
+      expect(overdue["overdue"]).to be(true)
+      expect(not_overdue["overdue"]).to be(false)
+    end
   end
 
   describe "POST /api/v1/support_requests" do
@@ -159,6 +173,14 @@ RSpec.describe "Api::V1::SupportRequests", type: :request do
         "active" => team_member.active,
       )
     end
+
+    it "flags an overdue support request" do
+      support_request = FactoryBot.create(:support_request, status: "open", due_date: Date.yesterday)
+
+      get "/api/v1/support_requests/#{support_request.id}"
+
+      expect(JSON.parse(response.body)["data"]["overdue"]).to be(true)
+    end
   end
 
   describe "PATCH /api/v1/support_requests/:id" do
@@ -232,6 +254,17 @@ RSpec.describe "Api::V1::SupportRequests", type: :request do
       errors = JSON.parse(response.body)["error"]
       expect(errors).to include("Title can't be blank")
       expect(errors).to include("Priority is not included in the list")
+    end
+
+    it "returns unprocessable_entity when updating an already-closed support request" do
+      support_request = FactoryBot.create(:support_request, status: "closed")
+
+      patch "/api/v1/support_requests/#{support_request.id}", params: {
+        support_request: { status: "open" },
+      }
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(JSON.parse(response.body)["error"]).to include("closed requests cannot be edited")
     end
   end
 end

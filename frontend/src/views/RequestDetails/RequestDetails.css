@@ -24,3 +24,9 @@
   color: var(--text-primary);
   font-size: var(--font-size-sm);
 }
+
+.request-details-due-date {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}

@@ -21,6 +21,7 @@ export function RadioButton({ label, name, options, value, onChange }: RadioButt
               name={name}
               value={option.value}
               checked={value === option.value}
+              disabled={option.disabled}
               onChange={() => onChange?.(option.value)}
             />
             <span>{option.label}</span>

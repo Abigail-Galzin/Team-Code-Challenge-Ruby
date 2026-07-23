@@ -165,3 +165,45 @@ Content-Type: application/json
     "priority": "urgent"
   }
 }
+
+### Update - closed request cannot be edited at all (expect 422)
+### First close it, then try to change it
+PATCH {{baseUrl}}/support_requests/5
+Content-Type: application/json
+
+{
+  "support_request": {
+    "status": "closed"
+  }
+}
+
+### Now this should fail with "closed requests cannot be edited"
+PATCH {{baseUrl}}/support_requests/5
+Content-Type: application/json
+
+{
+  "support_request": {
+    "status": "open"
+  }
+}
+
+### Update - resolved request cannot go directly to closed (expect 422)
+### First resolve it, then try to close it
+PATCH {{baseUrl}}/support_requests/6
+Content-Type: application/json
+
+{
+  "support_request": {
+    "status": "resolved"
+  }
+}
+
+### Now this should fail with "cannot change from resolved to closed"
+PATCH {{baseUrl}}/support_requests/6
+Content-Type: application/json
+
+{
+  "support_request": {
+    "status": "closed"
+  }
+}

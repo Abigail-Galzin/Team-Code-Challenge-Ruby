@@ -1,9 +1,26 @@
 import { apiClient } from "./apiClient";
 import type { CreateSupportRequestPayload, SupportRequestListResponse, SupportRequestResponse } from "../types";
 
-export function fetchSupportRequests(page: number) {
+export interface SupportRequestFilters {
+  status?: string;
+  priority?: string;
+  team_member_id?: number;
+  overdue?: boolean;
+  unassigned?: boolean;
+  q?: string;
+}
+
+export function fetchSupportRequests(page: number, filters: SupportRequestFilters = {}) {
+  const params: Record<string, string | number> = { page };
+  if (filters.status) params.status = filters.status;
+  if (filters.priority) params.priority = filters.priority;
+  if (filters.team_member_id) params.team_member_id = filters.team_member_id;
+  if (filters.overdue) params.overdue = "true";
+  if (filters.unassigned) params.unassigned = "true";
+  if (filters.q) params.q = filters.q;
+
   return apiClient
-    .get<SupportRequestListResponse>("/v1/support_requests", { params: { page } })
+    .get<SupportRequestListResponse>("/v1/support_requests", { params })
     .then((response) => response.data);
 }
 

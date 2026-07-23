@@ -9,24 +9,6 @@ export type RequestStatus =
 
 export type RequestPriority = "low" | "medium" | "high" | "critical";
 
-export interface MockSupportRequest {
-  id: string;
-  title: string;
-  description: string;
-  priority: RequestPriority;
-  status: RequestStatus;
-  assignedTo: string | null;
-  createdAt: string;
-}
-
-export interface TeamMember {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-  activeRequests: number;
-}
-
 export interface TeamMemberInfo {
   active: boolean;
   email: string;
@@ -44,6 +26,7 @@ export interface SupportRequest {
   completed_at: string | null;
   team_member_id: number | null;
   team_member: TeamMemberInfo | null;
+  overdue: boolean;
 }
 
 export interface SupportRequestListResponse {
@@ -65,6 +48,7 @@ export interface CreateSupportRequestPayload {
   status: RequestStatus;
   priority: RequestPriority;
   team_member_id?: number | null;
+  due_date?: string | null;
 }
 
 export interface TeamMemberSearchResult {
