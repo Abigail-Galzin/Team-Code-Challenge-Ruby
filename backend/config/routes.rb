@@ -1,9 +1,4 @@
 Rails.application.routes.draw do
-  namespace :api do
-    namespace :v1 do
-      resources :team_members
-    end
-  end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -15,9 +10,10 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      resources :support_requests, only: [] do
+      resources :support_requests, only: [ :index, :create,  :update, :show ] do
         resources :comments, only: [ :create ]
       end
+      resources :team_members, only: [ :index, :show, :create, :update ]
     end
   end
 end

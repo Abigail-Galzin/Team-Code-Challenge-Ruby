@@ -1,3 +1,5 @@
+import type { PaginationMeta } from "./pagination";
+
 export type RequestStatus =
   | "open"
   | "assigned"
@@ -5,16 +7,48 @@ export type RequestStatus =
   | "resolved"
   | "closed";
 
-export type RequestPriority = "low" | "medium" | "high";
+export type RequestPriority = "low" | "medium" | "high" | "critical";
+
+export interface TeamMemberInfo {
+  active: boolean;
+  email: string;
+  name: string;
+  role: string;
+}
 
 export interface SupportRequest {
-  id: string;
+  id: number;
   title: string;
   description: string;
-  priority: RequestPriority;
   status: RequestStatus;
-  assignedTo: string | null;
-  createdAt: string;
+  priority: RequestPriority;
+  due_date: string | null;
+  completed_at: string | null;
+  team_member_id: number | null;
+  team_member: TeamMemberInfo | null;
+  overdue: boolean;
+}
+
+export interface SupportRequestListResponse {
+  message: string;
+  data: SupportRequest[];
+  status: string;
+  pagination: PaginationMeta;
+}
+
+export interface SupportRequestResponse {
+  message: string;
+  data: SupportRequest;
+  status: string;
+}
+
+export interface CreateSupportRequestPayload {
+  title: string;
+  description: string;
+  status: RequestStatus;
+  priority: RequestPriority;
+  team_member_id?: number | null;
+  due_date?: string | null;
 }
 
 export interface TeamMember {
@@ -23,4 +57,18 @@ export interface TeamMember {
   email: string;
   role: string;
   //activeRequests: number;
+}
+
+export interface TeamMemberSearchResult {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  active: boolean;
+}
+
+export interface TeamMemberListResponse {
+  message: string;
+  data: TeamMemberSearchResult[];
+  status: string;
 }

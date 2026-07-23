@@ -175,6 +175,7 @@ GEM
     nokogiri (1.19.4-x86_64-linux-gnu)
       racc (~> 1.4)
     ostruct (0.6.3)
+    pagy (9.4.0)
     pg (1.6.3-x64-mingw-ucrt)
     pagy (9.4.0)
     pg (1.6.3-x86_64-darwin)

@@ -3,7 +3,7 @@ import { useId } from "react";
 import { classNames } from "../../utils/format";
 import "./FormField.css";
 
-export type TextBoxType = "text" | "email" | "password" | "number";
+export type TextBoxType = "text" | "email" | "password" | "number" | "date";
 
 export interface TextBoxProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "onChange"> {

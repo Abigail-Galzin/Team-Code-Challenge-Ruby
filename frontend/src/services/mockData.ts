@@ -1,4 +1,4 @@
-import type { RequestPriority, RequestStatus, SupportRequest, TeamMember } from "../types";
+import type { MockSupportRequest, RequestPriority, RequestStatus, TeamMember } from "../types";
 
 export const mockTeamMembers: TeamMember[] = [
   { id: "u1", name: "Ana Torres", email: "ana.torres@supportflow.com", role: "Support Engineer", activeRequests: 4 },
@@ -11,7 +11,7 @@ export const mockTeamMembers: TeamMember[] = [
 const statuses: RequestStatus[] = ["open", "assigned", "in_progress", "resolved", "closed"];
 const priorities: RequestPriority[] = ["low", "medium", "high"];
 
-export const mockSupportRequests: SupportRequest[] = Array.from({ length: 24 }).map((_, index) => {
+export const mockSupportRequests: MockSupportRequest[] = Array.from({ length: 24 }).map((_, index) => {
   const status = statuses[index % statuses.length];
   const priority = priorities[index % priorities.length];
   const assignee = mockTeamMembers[index % mockTeamMembers.length];
@@ -27,6 +27,6 @@ export const mockSupportRequests: SupportRequest[] = Array.from({ length: 24 }).
   };
 });
 
-export function getSupportRequestById(id: string): SupportRequest | undefined {
+export function getSupportRequestById(id: string): MockSupportRequest | undefined {
   return mockSupportRequests.find((request) => request.id === id);
 }

@@ -13,14 +13,12 @@ export function TeamMembers() {
   const [members, setMembers] = useState([]);
 
   useEffect(() => {
-    const fetchMembers = async() => {
+    const fetchMembers = async () => {
       try {
         const response = await teamMembersApi.getAll();
         setMembers(response.data.data);
-      } catch(err) {
-
-      }
-    }
+      } catch (err) {}
+    };
     fetchMembers();
   }, []);
 
@@ -29,7 +27,11 @@ export function TeamMembers() {
       title="Team Members"
       description="Support engineers and their current workload"
       breadcrumbs={[{ label: "Dashboard", to: "/" }, { label: "Team Members" }]}
-      actions={<Button onClick={() => navigate("/team-members/new")}>New Request</Button>}
+      actions={
+        <Button onClick={() => navigate("/team-members/new")}>
+          New team member
+        </Button>
+      }
     >
       <Grid columns={3}>
         {members.map((member) => (
@@ -38,13 +40,23 @@ export function TeamMembers() {
               <Avatar name={member.name} size="lg" />
               <div>
                 <p className="team-member-name">{member.name}</p>
-                <p className="team-member-role" style={{ textTransform: 'capitalize' }}>{member.role}</p>
+                <p
+                  className="team-member-role"
+                  style={{ textTransform: "capitalize" }}
+                >
+                  {member.role}
+                </p>
                 <p className="team-member-email">{member.email}</p>
               </div>
             </div>
             <div className="team-member-actions">
-              <p className="team-member-load">{member.activeRequests} active requests</p>
-              <Button variant="primary" onClick={() => navigate(`/team-members/${member.id}/edit`)}>
+              <p className="team-member-load">
+                {member.activeRequests} active requests
+              </p>
+              <Button
+                variant="primary"
+                onClick={() => navigate(`/team-members/${member.id}/edit`)}
+              >
                 Edit
               </Button>
             </div>
