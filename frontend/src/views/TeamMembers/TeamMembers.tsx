@@ -42,7 +42,13 @@ export function TeamMembers() {
                 <p className="team-member-email">{member.email}</p>
               </div>
             </div>
-            <p className="team-member-load">{member.activeRequests} active requests</p>
+            <div>
+              <p className="team-member-load">{member.activeRequests} active requests</p>
+              <button type="button" onClick={(event) => { event.stopPropagation(); console.log("edit", member.id); navigate(`/team_members/${member.id}/edit`); }}>
+                Edit
+              </button>
+            </div>
+
           </Card>
         ))}
       </Grid>

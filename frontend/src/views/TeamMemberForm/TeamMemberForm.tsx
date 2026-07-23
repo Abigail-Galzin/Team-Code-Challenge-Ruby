@@ -8,6 +8,9 @@ import { Button } from "../../components/common/Button";
 import "./TeamMemberForm.css";
 import { teamMembersApi } from "../../services/teamMembersApi";
 import type { FormErrors } from "../../types/teamMember"
+import { Alert } from "../../components/feedback/Alert";
+import axios from "axios";
+import { validateTeamMember } from "../../validations/teamMemberValidation";
 
 const rolOptions = [
   { label: "Developer", value: "developer" },
@@ -20,48 +23,90 @@ export function TeamMemberForm() {
   const navigate = useNavigate();
   const isEdit = Boolean(id);
 
-  const [member, setMember] = useState(null)
-  const [name, setName] = useState(member?.name ?? "");
-  const [email, setEmail] = useState(member?.email ?? "");
-  const [role, setRol] = useState<string>(member?.role ?? "developer");
-  const [errors, setErrors] = useState<FormErrors>({});
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState<string>("developer");
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [formErrors, setFormErrors] = useState<FormErrors>({});
+  const [errors, setErrors] = useState([]);
 
   async function handleSubmit() {
-    if (validateForm()) {
+    setErrors([]);
+    if (!validateForm()) {
       return;
     }
-    await teamMembersApi.create({ name, email, role })
 
-    navigate("/team-members");
+    try {
+      if (!isEdit) {
+        await teamMembersApi.create({ name, email, role })
+      } else {
+        await teamMembersApi.update(id, { name, email, role })
+      }
 
+      navigate("/team-members");
+    } catch(err) {
+      if (axios.isAxiosError(err) && err.response) {
+        const serverData = err.response.data;
+        if (serverData && Array.isArray(serverData.errors)) {
+          setErrors(serverData.errors);
+        } else {
+          setErrors(["An unexpected error occurred on the server."]);
+        }
+      }
+    }
   }
 
   const validateForm = () => {
-    const newErrors: FormErrors = {};
+    const { errors, isValid } = validateTeamMember({ name, email, role });
 
-    if (!name.trim()) newErrors.name = "Name is required";
-    if (!email.trim()) newErrors.email = "Email is required";
-    if (!role.trim()) newErrors.role = "Rol is required";
-
-    setErrors(newErrors);
-    return Object.keys(errors).length > 0;
+    setFormErrors(errors);
+    return isValid;
   }
-  useEffect(() => {
-    const existing = async() => {
-      try {
-        const response = id ? await teamMembersApi.getById(id) : null;
-        setMember(response.data);
-      } catch(err) {
 
+  useEffect(() => {
+    if (!id) return;
+
+    const fetchMember = async() => {
+      try {
+        setIsLoading(true);
+        const response = await teamMembersApi.getById(id);
+        const data = response.data;
+
+        setName(data.name ?? "");
+        setEmail(data.email ?? "");
+        setRole(data.role ?? "developer");
+      } catch(err) {
+        setErrors([""]);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    existing();
-  }, null)
+    fetchMember();
+  }, [id])
+
+  if (isLoading) {
+    return (
+      <AppLayout
+        title={isEdit ? "Edit Member" : "Create Member"}
+        description={isEdit ? `Editing ${id}` : "Register a new team member"}
+        breadcrumbs={[
+          { label: "Dashboard", to: "/" },
+          { label: "Team Members", to: "/team-members" },
+          { label: isEdit ? "Edit" : "New" },
+        ]}
+      >
+        <Card>
+          <p>Loading member data...</p>
+        </Card>
+      </AppLayout>
+    );
+  }
 
   return (
     <AppLayout
-      title={isEdit ? "Edit Request" : "Create Member"}
+      title={isEdit ? "Edit Member" : "Create Member"}
       description={isEdit ? `Editing ${id}` : "Register a new team member"}
       breadcrumbs={[
         { label: "Dashboard", to: "/" },
@@ -69,6 +114,15 @@ export function TeamMemberForm() {
         { label: isEdit ? "Edit" : "New" },
       ]}
     >
+      {errors.length > 0 && (
+        <Alert variant="error" title="Error">
+          <div className="alert-message">
+            <ul>
+              {errors.map((error, index) => <li key={index}>{error}</li>)}
+            </ul>
+          </div>
+        </Alert>
+      )}
       <Card>
         <div className="team-member-form">
           <TextBox
@@ -76,7 +130,7 @@ export function TeamMemberForm() {
             required
             value={name}
             onChange={setName}
-            error={errors.name}
+            error={formErrors.name}
             placeholder="e.g. Alicia Bob"
           />
           <TextBox
@@ -84,7 +138,7 @@ export function TeamMemberForm() {
             required
             value={email}
             onChange={setEmail}
-            error={errors.email}
+            error={formErrors.email}
             placeholder="e.g. name@domain.com"
           />
           <RadioButton
@@ -92,7 +146,7 @@ export function TeamMemberForm() {
             name="role"
             options={rolOptions}
             value={role}
-            onChange={(value) => setRol(value)}
+            onChange={(value) => setRole(value)}
           />
           <div className="team-member-form-actions">
             <Button variant="secondary" onClick={() => navigate(-1)}>
