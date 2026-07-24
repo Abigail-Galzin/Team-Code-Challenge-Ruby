@@ -1,6 +1,6 @@
-import type { MockSupportRequest, RequestPriority, RequestStatus, TeamMember } from "../types";
+import type { MockSupportRequest, MockTeamMember, RequestPriority, RequestStatus } from "../types";
 
-export const mockTeamMembers: TeamMember[] = [
+export const mockTeamMembers: MockTeamMember[] = [
   { id: "u1", name: "Ana Torres", email: "ana.torres@supportflow.com", role: "Support Engineer", activeRequests: 4 },
   { id: "u2", name: "Bruno Silva", email: "bruno.silva@supportflow.com", role: "Support Engineer", activeRequests: 2 },
   { id: "u3", name: "Carla Mendes", email: "carla.mendes@supportflow.com", role: "Team Lead", activeRequests: 5 },

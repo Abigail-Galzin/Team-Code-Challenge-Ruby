@@ -35,4 +35,14 @@ class TeamMember < ApplicationRecord
   validates :role, presence: true
   validates :active, inclusion: { in: [true, false] }
 
+  validate :active_cannot_be_reactivated, on: :update
+
+  private
+
+  def active_cannot_be_reactivated
+    return unless active_changed?
+    return unless active_was == false && active == true
+
+    errors.add(:active, "cannot be reactivated once deactivated")
+  end
 end

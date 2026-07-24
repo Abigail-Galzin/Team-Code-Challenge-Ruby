@@ -6,7 +6,6 @@ const navLinks = [
   { to: "/", label: "Dashboard", end: true },
   { to: "/requests", label: "Requests", end: false },
   { to: "/team-members", label: "Team Members", end: false },
-  { to: "/components", label: "Components Demo", end: false },
 ];
 
 export function Navbar() {
@@ -20,7 +19,9 @@ export function Navbar() {
               key={link.to}
               to={link.to}
               end={link.end}
-              className={({ isActive }) => classNames("navbar-link", isActive && "navbar-link-active")}
+              className={({ isActive }) =>
+                classNames("navbar-link", isActive && "navbar-link-active")
+              }
             >
               {link.label}
             </NavLink>

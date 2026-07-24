@@ -14,6 +14,7 @@ Rails.application.routes.draw do
         resources :comments, only: [ :create ]
       end
       resources :team_members, only: [ :index, :show, :create, :update ]
+      resources :dashboard, only: [ :index ]
     end
   end
 end

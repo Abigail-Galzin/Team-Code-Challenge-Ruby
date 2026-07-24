@@ -1,13 +1,15 @@
 import type { TeamMember, TeamMemberListResponse } from "../types";
 import { apiClient } from "./apiClient";
 
+export type TeamMemberPayload = Partial<Pick<TeamMember, "name" | "email" | "role" | "active">>;
+
 export const teamMembersApi = {
   getAll: () => apiClient.get("/v1/team_members"),
   getById: (id: string) => apiClient.get(`/v1/team_members/${id}`),
-  create: (teamMemberData: TeamMember) =>
-    apiClient.post("/v1/team_members", teamMemberData),
-  update: (id: string, teamMemberData: TeamMember) =>
-    apiClient.put(`/v1/team_members/${id}`, teamMemberData),
+  create: (teamMemberData: TeamMemberPayload) =>
+    apiClient.post("/v1/team_members", { team_member: teamMemberData }),
+  update: (id: string, teamMemberData: TeamMemberPayload) =>
+    apiClient.put(`/v1/team_members/${id}`, { team_member: teamMemberData }),
   delete: (id: string) => apiClient.delete(`/v1/team_members/${id}`),
 };
 

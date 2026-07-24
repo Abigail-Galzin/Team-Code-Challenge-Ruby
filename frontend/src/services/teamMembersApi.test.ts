@@ -26,16 +26,21 @@ describe("teamMembersApi", () => {
     expect(apiClient.get).toHaveBeenCalledWith("/v1/team_members/5");
   });
 
-  it("create posts the payload to the collection endpoint", () => {
+  it("create posts the payload wrapped in a team_member key", () => {
     const payload = { name: "Ana Torres", email: "ana@example.com", role: "developer" };
     teamMembersApi.create(payload);
-    expect(apiClient.post).toHaveBeenCalledWith("/v1/team_members", payload);
+    expect(apiClient.post).toHaveBeenCalledWith("/v1/team_members", { team_member: payload });
   });
 
-  it("update puts the payload to the member's endpoint", () => {
+  it("update puts the payload wrapped in a team_member key", () => {
     const payload = { name: "Ana Torres", email: "ana@example.com", role: "qa" };
     teamMembersApi.update("5", payload);
-    expect(apiClient.put).toHaveBeenCalledWith("/v1/team_members/5", payload);
+    expect(apiClient.put).toHaveBeenCalledWith("/v1/team_members/5", { team_member: payload });
+  });
+
+  it("update accepts a partial payload for deactivation", () => {
+    teamMembersApi.update("5", { active: false });
+    expect(apiClient.put).toHaveBeenCalledWith("/v1/team_members/5", { team_member: { active: false } });
   });
 
   it("delete removes the member by id", () => {

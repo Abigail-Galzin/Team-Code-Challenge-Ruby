@@ -72,11 +72,12 @@ export interface CreateSupportRequestPayload {
 }
 
 export interface TeamMember {
-  id?: string;
+  id: string;
   name: string;
   email: string;
   role: string;
-  //activeRequests: number;
+  active: boolean;
+  activeRequests: number;
 }
 
 export interface TeamMemberSearchResult {

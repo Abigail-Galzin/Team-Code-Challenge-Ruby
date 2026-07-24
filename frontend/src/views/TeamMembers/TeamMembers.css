@@ -8,6 +8,9 @@
 .team-member-name {
   font-weight: 500;
   color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
 }
 
 .team-member-role {
@@ -34,4 +37,9 @@
   align-items: center;
   border-top: 1px solid var(--border-color);
   padding-top: 1%;
+}
+
+.team-member-buttons {
+  display: flex;
+  gap: var(--spacing-sm);
 }

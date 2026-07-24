@@ -1,5 +1,8 @@
 @baseUrl = http://localhost:3000/api/v1
 
+### Dashboard stats
+GET {{baseUrl}}/dashboard
+
 ### List support requests (paginated)
 GET {{baseUrl}}/support_requests
 
