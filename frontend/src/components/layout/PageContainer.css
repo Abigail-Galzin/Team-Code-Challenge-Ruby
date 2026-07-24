@@ -1,0 +1,23 @@
+.page-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: var(--spacing-md);
+}
+
+.page-container-inner {
+  width: 100%;
+  max-width: var(--content-max-width);
+}
+
+@media (min-width: 768px) {
+  .page-container {
+    padding: var(--spacing-lg);
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-container {
+    padding: var(--spacing-xl);
+  }
+}

@@ -1,0 +1,20 @@
+.dashboard-stat {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.dashboard-stat-warning {
+  color: var(--error-color);
+}
+
+.dashboard-section-title {
+  margin: var(--spacing-lg) 0 var(--spacing-sm);
+}
+
+.dashboard-breakdown-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+}

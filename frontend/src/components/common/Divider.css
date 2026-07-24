@@ -1,0 +1,13 @@
+.divider {
+  border: none;
+  border-top: 1px solid var(--border-color);
+  margin: var(--spacing-md) 0;
+}
+
+.divider-sm {
+  margin: var(--spacing-sm) 0;
+}
+
+.divider-lg {
+  margin: var(--spacing-lg) 0;
+}

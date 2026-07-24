@@ -1,0 +1,45 @@
+.team-member {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+}
+
+.team-member-name {
+  font-weight: 500;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.team-member-role {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.team-member-email {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.team-member-load {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  padding-top: var(--spacing-sm);
+  margin: 0;
+}
+
+.team-member-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border-color);
+  padding-top: 1%;
+}
+
+.team-member-buttons {
+  display: flex;
+  gap: var(--spacing-sm);
+}

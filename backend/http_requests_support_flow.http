@@ -1,0 +1,212 @@
+@baseUrl = http://localhost:3000/api/v1
+
+### Dashboard stats
+GET {{baseUrl}}/dashboard
+
+### List support requests (paginated)
+GET {{baseUrl}}/support_requests
+
+
+### List support requests - page 1
+GET {{baseUrl}}/support_requests?page=1
+
+### List support requests - page 2, small limit to force pagination
+### expected error
+GET {{baseUrl}}/support_requests?page=50&limit=2
+
+### Show a support request (expect 200)
+GET {{baseUrl}}/support_requests/5
+
+### Show - non-existent support request (expect 404)
+GET {{baseUrl}}/support_requests/999999
+
+### Create a support request
+POST {{baseUrl}}/support_requests
+Content-Type: application/json
+
+{
+  "support_request": {
+    "title": "Martin Lutther King",
+    "description": "Support",
+    "status": "open",
+    "priority": "high"
+  }
+}
+
+### Create a support request with wrong priority
+POST {{baseUrl}}/support_requests
+Content-Type: application/json
+
+{
+  "support_request": {
+    "title": "clark ken",
+    "description": "QA",
+    "status": "open",
+    "priority": "urgent"
+  }
+}
+
+### Create a support request assigned to a team member
+POST {{baseUrl}}/support_requests
+Content-Type: application/json
+
+{
+  "support_request": {
+    "title": "Joan Paul Luther",
+    "description": "Developer ",  
+    "team_member_id": 5
+  }
+}
+
+### Create - missing team member (expect 404)
+POST {{baseUrl}}/support_requests
+Content-Type: application/json
+
+{
+  "support_request": {
+    "title": "Test wrong",
+    "description": "Test wrong",
+    "status": "open",
+    "priority": "low",
+    "team_member_id": 999999
+  }
+}
+
+### Create - with  team member (expect 201)
+POST {{baseUrl}}/support_requests
+Content-Type: application/json
+
+{
+  "support_request": {
+    "title": "Joan Paul",
+    "description": "Developer Chef",  
+    "status": "open",
+    "priority": "low",
+    "team_member_id": 5
+  }
+}
+
+### Create - missing required fields (expect 422)
+POST {{baseUrl}}/support_requests
+Content-Type: application/json
+
+{
+  "support_request": {
+    "title": "",
+    "description": ""
+  }
+}
+
+### Update a support request (expect 200)
+PATCH {{baseUrl}}/support_requests/5
+Content-Type: application/json
+
+{
+  "support_request": {
+    "status": "in_progress",
+    "priority": "high"
+  }
+}
+
+### Update a support request with all params (expect 200)
+PATCH {{baseUrl}}/support_requests/5
+Content-Type: application/json
+
+{
+  "support_request": {
+    "title": "updated",
+    "description": "updated",
+    "status": "in_progress",
+    "priority": "high"
+  }
+}
+### Update a support request with all params and assign another team member(expect 200)
+PATCH {{baseUrl}}/support_requests/5
+Content-Type: application/json
+
+{
+  "support_request": {
+    "title": "updated_1",
+    "description": "updated_1",
+    "status": "in_progress",
+    "priority": "high",
+    "team_member_id": 8
+  }
+}
+
+### Update a support request with all params and remove the team member(expect 200)
+PATCH {{baseUrl}}/support_requests/5
+Content-Type: application/json
+
+{
+  "support_request": {
+    "title": "updated_1",
+    "description": "updated_1",
+    "status": "in_progress",
+    "priority": "high",
+    "team_member_id": null
+  }
+}
+
+### Update - non-existent support request (expect 404)
+PATCH {{baseUrl}}/support_requests/999999
+Content-Type: application/json
+
+{
+  "support_request": {
+    "status": "resolved"
+  }
+}
+
+### Update - invalid data (expect 422)
+PATCH {{baseUrl}}/support_requests/5
+Content-Type: application/json
+
+{
+  "support_request": {
+    "title": "",
+    "priority": "urgent"
+  }
+}
+
+### Update - closed request cannot be edited at all (expect 422)
+### First close it, then try to change it
+PATCH {{baseUrl}}/support_requests/5
+Content-Type: application/json
+
+{
+  "support_request": {
+    "status": "closed"
+  }
+}
+
+### Now this should fail with "closed requests cannot be edited"
+PATCH {{baseUrl}}/support_requests/5
+Content-Type: application/json
+
+{
+  "support_request": {
+    "status": "open"
+  }
+}
+
+### Update - resolved request cannot go directly to closed (expect 422)
+### First resolve it, then try to close it
+PATCH {{baseUrl}}/support_requests/6
+Content-Type: application/json
+
+{
+  "support_request": {
+    "status": "resolved"
+  }
+}
+
+### Now this should fail with "cannot change from resolved to closed"
+PATCH {{baseUrl}}/support_requests/6
+Content-Type: application/json
+
+{
+  "support_request": {
+    "status": "closed"
+  }
+}

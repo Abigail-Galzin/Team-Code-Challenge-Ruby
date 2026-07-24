@@ -32,7 +32,10 @@ threads threads_count, threads_count
 port ENV.fetch("PORT", 3000)
 
 # Allow puma to be restarted by `bin/rails restart` command.
-plugin :tmp_restart
+# Disabled on Windows: Puma's restart mechanism uses `exec("bin/rails", ...)`,
+# which fails with ENOENT because Windows cannot exec a Ruby script directly
+# without the interpreter prefix. Just stop (Ctrl+C) and re-run the server instead.
+plugin :tmp_restart unless Gem.win_platform?
 
 # Run the Solid Queue supervisor inside of Puma for single-server deployments.
 plugin :solid_queue if ENV["SOLID_QUEUE_IN_PUMA"]

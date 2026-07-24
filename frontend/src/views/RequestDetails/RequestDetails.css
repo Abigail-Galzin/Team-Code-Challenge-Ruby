@@ -1,0 +1,32 @@
+.request-details-badges {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.request-details-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin: 0;
+}
+
+.request-details-list dt {
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.request-details-list dd {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+}
+
+.request-details-due-date {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
