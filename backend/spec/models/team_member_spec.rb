@@ -74,6 +74,28 @@ RSpec.describe TeamMember, type: :model do
       expect(subject.errors[:active]).to include("is not included in the list")
     end
 
+    it 'allows an active member to become inactive' do
+      member = FactoryBot.create(:team_member, active: true)
+      member.active = false
+
+      expect(member).to be_valid
+    end
+
+    it 'does not allow an inactive member to become active again' do
+      member = FactoryBot.create(:team_member, :inactive)
+      member.active = true
+
+      expect(member).to_not be_valid
+      expect(member.errors[:active]).to include("cannot be reactivated once deactivated")
+    end
+
+    it 'does not raise validation errors when active is unchanged' do
+      member = FactoryBot.create(:team_member, :inactive)
+      member.name = 'Updated Name'
+
+      expect(member).to be_valid
+    end
+
     it 'accepts valid enum roles' do
       %w[developer qa support].each do |role|
         subject.role = role

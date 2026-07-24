@@ -94,5 +94,28 @@ RSpec.describe "Api::V1::TeamMembers", type: :request do
       body = JSON.parse(response.body)
       expect(body['error']).to eq('Team member not found')
     end
+
+    it 'deactivates an active member and returns HTTP 200' do
+      patch api_v1_team_member_path(team_member), params: {
+        team_member: { active: false }
+      }, as: :json
+
+      expect(response).to have_http_status(:ok)
+      expect(team_member.reload.active).to eq(false)
+    end
+
+    it 'returns HTTP 422 when reactivating an inactive member' do
+      team_member.update!(active: false)
+
+      expect do
+        patch api_v1_team_member_path(team_member), params: {
+          team_member: { active: true }
+        }, as: :json
+      end.not_to change { team_member.reload.active }
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      body = JSON.parse(response.body)
+      expect(body['errors']).to include('Active cannot be reactivated once deactivated')
+    end
   end
 end

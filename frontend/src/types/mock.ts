@@ -10,7 +10,7 @@ export interface MockSupportRequest {
   createdAt: string;
 }
 
-export interface TeamMember {
+export interface MockTeamMember {
   id: string;
   name: string;
   email: string;
